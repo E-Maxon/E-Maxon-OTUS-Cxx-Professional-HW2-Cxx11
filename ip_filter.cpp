@@ -25,7 +25,7 @@ auto split(const std::string &str, char d)
     return r;
 }
 
-int main(int argc, char const *argv[])
+int main()
 {
     try
     {
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
                                 auto to_bytes = [](const std::string& str) {
                                     return std::stoi(std::bitset<8>(std::stoi(str)).to_string());
                                 };
-                                for (int i = 0; i < a.size() && i < b.size(); i++) {
+                                for (std::string::size_type i = 0; i < a.size() && i < b.size(); i++) {
                                     if (to_bytes(a[i]) > to_bytes(b[i])) {
                                         return true;
                                     } else if (to_bytes(a[i]) < to_bytes(b[i])) {
