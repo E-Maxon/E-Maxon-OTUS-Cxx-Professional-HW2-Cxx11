@@ -25,6 +25,31 @@ auto split(const std::string &str, char d)
     return r;
 }
 
+auto filter(const std::vector<std::vector<int> >& ip_pool, bool (*func) (const std::vector<int>&)) {
+    std::vector<std::vector<int> > res;
+    for (const auto& ip : ip_pool) {
+        if (func(ip)) {
+            res.push_back(ip);
+        }
+    }
+    return res;
+}
+
+std::ostream& operator<<(std::ostream& s, const std::vector<std::vector<int> >& ip_pool) {
+    for (const auto& ip : ip_pool) {
+        auto first = true;
+        for (const auto& number : ip) {
+            if (!first) {
+                std::cout << ".";
+            }
+            first = false;
+            std::cout << number;
+        }
+        std::cout << std::endl;
+    }
+    return s;
+}
+
 int main()
 {
     try
@@ -37,37 +62,51 @@ int main()
             ip_pool.push_back(split(v.at(0), '.'));
         }
 
-        auto comp_bytes = [](const std::vector<std::string>& a,
-                            const std::vector<std::string>& b) {
+        std::vector<std::vector<int> > res1;
+        for (const auto& ip : ip_pool) {
+            res1.push_back({});
+            for (const auto& number : ip) {
+                res1.back().push_back(std::stoi(number));
+            }
+        }
 
-                                auto to_bytes = [](const std::string& str) {
-                                    return std::stoi(std::bitset<8>(std::stoi(str)).to_string());
-                                };
-                                for (std::string::size_type i = 0; i < a.size() && i < b.size(); i++) {
-                                    if (to_bytes(a[i]) > to_bytes(b[i])) {
-                                        return true;
-                                    } else if (to_bytes(a[i]) < to_bytes(b[i])) {
-                                        return false;
-                                    }
+        auto comp = [](const std::vector<int>& a,
+                       const std::vector<int>& b) {
+                            for (auto i = 0; i < a.size() && i < b.size(); i++) {
+                                if (a[i] > b[i]) {
+                                    return true;
+                                } else if (a[i] < b[i]) {
+                                    return false;
                                 }
-                                return a.size() > b.size();
+                            }
+                            return a.size() > b.size();
         };
 
-        sort(ip_pool.begin(), ip_pool.end(), comp_bytes);
+        sort(res1.begin(), res1.end(), comp);
+        std::cout << res1;
 
-        for(auto ip = ip_pool.cbegin(); ip != ip_pool.cend(); ++ip)
-        {
-            for(auto ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
-            {
-                if (ip_part != ip->cbegin())
-                {
-                    std::cout << ".";
+        auto f2 = [](const std::vector<int>& ip) {
+            return ip[0] == 1;
+        };
+        auto res2 = filter(res1, f2);
+        std::cout << res2;
 
+        auto f3 = [](const std::vector<int>& ip) {
+            return ip[0] == 46 && ip[1] == 70;
+        };
+        auto res3 = filter(res1, f3);
+        std::cout << res3;
+
+        auto f4 = [](const std::vector<int>& ip) {
+            for (const auto& number : ip) {
+                if (number == 46) {
+                    return true;
                 }
-                std::cout << *ip_part;
             }
-            std::cout << std::endl;
-        }
+            return false;
+        };
+        auto res4 = filter(res1, f4);
+        std::cout << res4;
     }
     catch(const std::exception &e)
     {
