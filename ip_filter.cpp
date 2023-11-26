@@ -72,7 +72,7 @@ int main()
 
         auto comp = [](const std::vector<int>& a,
                        const std::vector<int>& b) {
-                            for (auto i = 0; i < a.size() && i < b.size(); i++) {
+                            for (size_t i = 0; i < a.size() && i < b.size(); i++) {
                                 if (a[i] > b[i]) {
                                     return true;
                                 } else if (a[i] < b[i]) {
